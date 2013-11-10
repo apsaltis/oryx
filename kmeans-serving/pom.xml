@@ -18,14 +18,14 @@
   <parent>
     <groupId>com.cloudera.oryx</groupId>
     <artifactId>oryx</artifactId>
-    <version>0.2.1</version>
+    <version>0.3.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>oryx-kmeans-serving</artifactId>
   <packaging>jar</packaging>
   <name>Oryx K-Means Serving</name>
-  <version>0.2.1</version>
+  <version>0.3.0-SNAPSHOT</version>
 
   <properties>
     <module.jspx.package>com.cloudera.oryx.kmeans.serving.web</module.jspx.package>
