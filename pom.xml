@@ -22,7 +22,7 @@
   <name>Oryx</name>
   <version>0.2.0-SNAPSHOT</version>
 
-  <url>https://github.com/cloudera/oryx-alpha</url>
+  <url>https://github.com/cloudera/oryx</url>
   <inceptionYear>2013</inceptionYear>
   <licenses>
     <license>
@@ -33,13 +33,12 @@
   </licenses>
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/cloudera/oryx-alpha/issues</url>
+    <url>https://github.com/cloudera/oryx/issues</url>
   </issueManagement>
-  <!-- This needs to change from the local repo to public: -->
   <scm>
-    <connection>scm:git:http://github.mtv.cloudera.com/CDH/oryx.git</connection>
-    <url>scm:git:http://github.mtv.cloudera.com/CDH/oryx.git</url>
-    <developerConnection>scm:git:http://github.mtv.cloudera.com/CDH/oryx.git</developerConnection>
+    <connection>scm:git:http://github.com/cloudera/oryx.git</connection>
+    <url>scm:git:http://github.com/cloudera/oryx.git</url>
+    <developerConnection>scm:git:http://github.com/cloudera/oryx.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
@@ -372,140 +371,6 @@
           </exclusion>
         </exclusions>
       </dependency>
-
-      <!--
-      <dependency>
-        <groupId>org.apache.hcatalog</groupId>
-        <artifactId>hcatalog-core</artifactId>
-        <version>0.5.0-${hadoop.version.suffix}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils-core</artifactId>
-          </exclusion>
-
-          <exclusion>
-            <groupId>org.apache.hive</groupId>
-            <artifactId>hive-cli</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hive</groupId>
-            <artifactId>hive-common</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hive</groupId>
-            <artifactId>hive-serde</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hive</groupId>
-            <artifactId>hive-shims</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.avro</groupId>
-            <artifactId>avro-mapred</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.googlecode.javaewah</groupId>
-            <artifactId>JavaEWAH</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.thrift</groupId>
-            <artifactId>libthrift</artifactId>
-          </exclusion>
-
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-common</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-hdfs</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-auth</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-archives</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-annotations</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-yarn-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-yarn-server-common</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-yarn-server-nodemanager</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-yarn-server-resourcemanager</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-yarn-server-web-proxy</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-yarn-server-tests</artifactId>
-          </exclusion>
-
-          <exclusion>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-json</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-server</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-guice</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.sun.jersey.jersey-test-framework</groupId>
-            <artifactId>jersey-test-framework-grizzly2</artifactId>
-          </exclusion>
-
-        </exclusions>
-      </dependency>
-       -->
 
     </dependencies>
   </dependencyManagement>
