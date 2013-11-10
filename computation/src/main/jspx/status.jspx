@@ -1,0 +1,61 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1">
+<!--
+  Copyright (c) 2013, Cloudera, Inc. All Rights Reserved.
+
+  Cloudera, Inc. licenses this file to you under the Apache License,
+  Version 2.0 (the "License"). You may not use this file except in
+  compliance with the License. You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  This software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+  CONDITIONS OF ANY KIND, either express or implied. See the License for
+  the specific language governing permissions and limitations under the
+  License.
+  -->
+<jsp:directive.page import="com.cloudera.oryx.computation.PeriodicRunner"/>
+<jsp:directive.page import="com.cloudera.oryx.computation.common.StepState"/>
+<jsp:directive.page import="com.cloudera.oryx.computation.web.ComputationInitListener"/>
+<jsp:directive.page import="com.cloudera.oryx.computation.common.GenerationRunnerState"/>
+    <jsp:directive.page contentType="application/xml"/>
+<jsp:directive.page session="false"/>
+<jsp:directive.page isELIgnored="false"/>
+<jsp:text><![CDATA[<?xml version="1.0" encoding="UTF-8"?>]]></jsp:text>
+<jsp:scriptlet>
+PeriodicRunner periodicRunner = (PeriodicRunner) application.getAttribute(ComputationInitListener.PERIODIC_RUNNER_KEY);
+pageContext.setAttribute("periodicRunner", periodicRunner);
+</jsp:scriptlet>
+<status>
+  <generations>
+    <jsp:scriptlet>
+      for (GenerationRunnerState generationState : periodicRunner.getState().getGenerationStates()) {
+        pageContext.setAttribute("generationState", generationState);
+    </jsp:scriptlet>
+    <generation>
+      <id>${generationState.generationID}</id>
+      <startTime>${generationState.startTime}</startTime>
+      <endTime>${generationState.endTime}</endTime>
+      <steps>
+        <jsp:scriptlet>
+        for (StepState stepState : generationState.getStepStates()) {
+          pageContext.setAttribute("stepState", stepState);
+        </jsp:scriptlet>
+        <step>
+          <name>${stepState.name}</name>
+          <status>${stepState.status}</status>
+          <startTime>${stepState.startTime}</startTime>
+          <endTime>${stepState.endTime}</endTime>
+          <mapProgress>${stepState.mapProgress}</mapProgress>
+          <reduceProgress>${stepState.reduceProgress}</reduceProgress>
+        </step>
+        <jsp:scriptlet>
+        }
+        </jsp:scriptlet>
+      </steps>
+    </generation>
+    <jsp:scriptlet>
+      }
+    </jsp:scriptlet>
+  </generations>
+</status>
+</jsp:root>

@@ -1,0 +1,167 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1">
+<!--
+  Copyright (c) 2013, Cloudera, Inc. All Rights Reserved.
+
+  Cloudera, Inc. licenses this file to you under the Apache License,
+  Version 2.0 (the "License"). You may not use this file except in
+  compliance with the License. You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  This software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+  CONDITIONS OF ANY KIND, either express or implied. See the License for
+  the specific language governing permissions and limitations under the
+  License.
+  -->
+<jsp:directive.page import="com.cloudera.oryx.serving.web.AbstractOryxServingInitListener"/>
+<jsp:directive.page contentType="text/html"/>
+<jsp:directive.page session="false"/>
+<jsp:directive.page isELIgnored="false"/>
+<jsp:text><![CDATA[<!DOCTYPE html>]]></jsp:text>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="/style.jspx"/>
+</head>
+<body>
+
+<h2>Alternating Least Squares</h2>
+
+<table class="layout" style="width:100%"><tr><td style="width:60%">
+
+<table class="layout">
+
+<form action="#" style="padding:10px">
+  <tr><td></td><td>&amp;nbsp;&amp;nbsp;User ID</td><td colspan="2"></td></tr>
+  <tr><td><code>/recommend</code></td>
+    <td><code>/</code><input type="text" id="recommend-userid" onkeyup="return handleReturn(event, 'recommend',true,new Array('userid'))"/></td>
+    <td></td>
+    <td><a href="#" class="arrow" onclick="return doQuery('recommend',true,new Array('userid'))">&amp;#x27AC;</a></td></tr>
+</form>
+
+  <tr><td colspan="4"><hr/></td></tr>
+
+<form action="#" style="padding:10px">
+  <tr><td></td><td>&amp;nbsp;&amp;nbsp;Item ID 1</td><td>&amp;nbsp;&amp;nbsp;<em>(Item ID 2)</em></td><td></td></tr>
+  <tr><td><code>/recommendToAnonymous</code></td>
+    <td><code>/</code><input type="text" id="recommendToAnonymous-itemid1" onkeyup="return handleReturn(event,'recommendToAnonymous',true,new Array('itemid1','itemid2'))"/></td>
+    <td><code>/</code><input type="text" id="recommendToAnonymous-itemid2" onkeyup="return handleReturn(event,'recommendToAnonymous',true,new Array('itemid1','itemid2'))"/></td>
+    <td><a href="#" class="arrow" onclick="return doQuery('recommendToAnonymous',true,new Array('itemid1','itemid2'))">&amp;#x27AC;</a></td></tr>
+</form>
+
+  <tr><td colspan="4"><hr/></td></tr>
+
+<form action="#" style="padding:10px">
+  <tr><td></td><td>&amp;nbsp;&amp;nbsp;Item ID 1</td><td>&amp;nbsp;&amp;nbsp;<em>(Item ID 2)</em></td><td></td></tr>
+  <tr><td><code>/similarity</code></td>
+    <td><code>/</code><input type="text" id="similarity-itemid1" onkeyup="return handleReturn(event,'similarity',true,new Array('itemid1','itemid2'))"/></td>
+    <td><code>/</code><input type="text" id="similarity-itemid2" onkeyup="return handleReturn(event,'similarity',true,new Array('itemid1','itemid2'))"/></td>
+    <td><a href="#" class="arrow" onclick="return doQuery('similarity',true,new Array('itemid1','itemid2'))">&amp;#x27AC;</a></td></tr>
+</form>
+
+  <tr><td colspan="4"><hr/></td></tr>
+
+<form action="#" style="padding:10px">
+  <tr><td></td><td>&amp;nbsp;&amp;nbsp;To Item</td><td>&amp;nbsp;&amp;nbsp;Item ID</td><td></td></tr>
+  <tr><td><code>/similarityToItem</code></td>
+    <td><code>/</code><input type="text" id="similarityToItem-toitem" onkeyup="return handleReturn(event,'similarityToItem',true,new Array('toitem','itemid'))"/></td>
+    <td><code>/</code><input type="text" id="similarityToItem-itemid" onkeyup="return handleReturn(event,'similarityToItem',true,new Array('toitem','itemid'))"/></td>
+    <td><a href="#" class="arrow" onclick="return doQuery('similarityToItem',true,new Array('toitem','itemid'))">&amp;#x27AC;</a></td></tr>
+</form>
+
+  <tr><td colspan="4"><hr/></td></tr>
+
+<form action="#" style="padding:10px">
+  <tr><td></td><td>&amp;nbsp;&amp;nbsp;User ID</td><td>&amp;nbsp;&amp;nbsp;Item ID</td><td></td></tr>
+  <tr><td><code>/estimate</code></td>
+    <td><code>/</code><input type="text" id="estimate-userid" onkeyup="return handleReturn(event,'estimate',true,new Array('userid','itemid'))"/></td>
+    <td><code>/</code><input type="text" id="estimate-itemid" onkeyup="return handleReturn(event,'estimate',true,new Array('userid','itemid'))"/></td>
+    <td><a href="#" class="arrow" onclick="return doQuery('estimate',true,new Array('userid','itemid'))">&amp;#x27AC;</a></td></tr>
+</form>
+
+  <tr><td colspan="4"><hr/></td></tr>
+
+<form action="#" style="padding:10px">
+  <tr><td></td><td>&amp;nbsp;&amp;nbsp;User ID</td><td>&amp;nbsp;&amp;nbsp;Item ID</td><td></td></tr>
+  <tr><td><code>/because</code></td>
+    <td><code>/</code><input type="text" id="because-userid" onkeyup="return handleReturn(event,'because',true,new Array('userid','itemid'))"/></td>
+    <td><code>/</code><input type="text" id="because-itemid" onkeyup="return handleReturn(event,'because',true,new Array('userid','itemid'))"/></td>
+    <td><a href="#" class="arrow" onclick="return doQuery('because',true,new Array('userid','itemid'))">&amp;#x27AC;</a></td></tr>
+</form>
+
+  <tr><td colspan="4"><hr/></td></tr>
+
+<form action="#" style="padding:10px">
+  <tr><td><code>/mostPopularItems</code></td>
+    <td colspan="2"/>
+    <td><a href="#" class="arrow" onclick="return doQuery('mostPopularItems',true)">&amp;#x27AC;</a></td></tr>
+</form>
+  
+  <tr><td colspan="4"><hr/></td></tr>
+
+  <jsp:scriptlet>
+    boolean readOnly = (Boolean) application.getAttribute(AbstractOryxServingInitListener.READ_ONLY_KEY);
+    if (readOnly) {
+  </jsp:scriptlet>
+
+  <tr><td colspan="4" style="text-align:center"><em>(Read-only Mode)</em></td></tr>
+
+  <jsp:scriptlet>
+    } else {
+  </jsp:scriptlet>
+
+<form action="#" style="padding:10px">
+  <tr><td></td><td>&amp;nbsp;&amp;nbsp;User ID</td><td>&amp;nbsp;&amp;nbsp;Item ID</td><td></td></tr>
+  <tr><td><code>/pref</code></td>
+    <td><code>/</code><input type="text" id="pref-userid" onkeyup="return handleReturn(event,'pref',false,new Array('userid','itemid'))"/></td>
+    <td><code>/</code><input type="text" id="pref-itemid" onkeyup="return handleReturn(event,'pref',false,new Array('userid','itemid'))"/></td>
+    <td><a href="#" class="arrow" onclick="return doQuery('pref',false,new Array('userid','itemid'))">&amp;#x27AC;</a></td></tr>
+</form>
+
+  <tr><td colspan="4"><hr/></td></tr>
+
+<form action="ingest" method="post" enctype="multipart/form-data" style="padding:10px" id="ingestFileForm">
+  <tr><td><code>/ingest</code></td>
+    <td colspan="2">
+      <input type="file" name="ingestedFile" style="width:140px"/>
+    </td>
+    <td><a href="#" class="arrow" onclick="document.getElementById('ingestFileForm').submit()">&amp;#x27AC;</a></td>
+  </tr>
+</form>
+
+  <tr><td colspan="4"><hr/></td></tr>
+
+<form action="#" style="padding:10px">
+  <tr><td><code>/ingest</code></td>
+    <td colspan="2">
+      <textarea rows="20" id="ingestData">userID,itemID[,value]...</textarea>
+    </td>
+    <td><a href="#" class="arrow" onclick="return doQuery('ingest',false,[],'ingestData')">&amp;#x27AC;</a></td>
+  </tr>
+</form>
+
+  <tr><td colspan="4"><hr/></td></tr>
+
+<form action="#" style="padding:10px">
+  <tr><td><code>/refresh</code></td>
+    <td colspan="2"></td>
+    <td><a href="#" class="arrow" onclick="return doQuery('refresh',false)">&amp;#x27AC;</a></td>
+  </tr>
+</form>
+
+  <jsp:scriptlet>
+    }
+  </jsp:scriptlet>
+
+</table>
+
+</td><td style="width:40%">
+
+<div style="background-color:#404040;padding:10px;min-height:500px;white-space:normal">
+<pre><code id="request-result">[]</code></pre>
+</div>
+
+</td></tr></table>
+
+</body>
+</html>
+</jsp:root>

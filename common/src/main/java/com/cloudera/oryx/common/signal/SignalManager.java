@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) 2013, Cloudera, Inc. All Rights Reserved.
+ *
+ * Cloudera, Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"). You may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * This software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for
+ * the specific language governing permissions and limitations under the
+ * License.
+ */
+
+package com.cloudera.oryx.common.signal;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.cloudera.oryx.common.ClassUtils;
+
+/**
+ * Subclasses can handle registering of handlers for OS signals. This abstraction only tries to load
+ * its subclass at runtime, since it may not exist on all platforms.
+ *
+ * @author Sean Owen
+ */
+public abstract class SignalManager {
+
+  private static final Logger log = LoggerFactory.getLogger(SignalManager.class);
+
+  private static final String IMPL_NAME = "com.cloudera.oryx.common.signal.SignalManagerPOSIXImpl";
+
+  abstract void doRegister(Runnable handler, SignalType... types);
+
+  /**
+   * @param handler {@link Runnable} to execute on signal of given types
+   * @param types signals to respond to with {@code handler}
+   */
+  public static void register(Runnable handler, SignalType... types) {
+    if (ClassUtils.classExists(IMPL_NAME)) {
+      SignalManager manager = ClassUtils.loadInstanceOf(IMPL_NAME, SignalManager.class);
+      manager.doRegister(handler, types);
+    } else {
+      log.warn("Unable to handle OS signals on this platform. Using Ctrl-C or kill to stop the server may " +
+               "result in loss of data");
+    }
+  }
+
+}

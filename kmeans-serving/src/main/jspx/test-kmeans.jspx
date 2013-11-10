@@ -1,0 +1,100 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1">
+<!--
+  Copyright (c) 2013, Cloudera, Inc. All Rights Reserved.
+
+  Cloudera, Inc. licenses this file to you under the Apache License,
+  Version 2.0 (the "License"). You may not use this file except in
+  compliance with the License. You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  This software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+  CONDITIONS OF ANY KIND, either express or implied. See the License for
+  the specific language governing permissions and limitations under the
+  License.
+  -->
+<jsp:directive.page import="com.cloudera.oryx.serving.web.AbstractOryxServingInitListener"/>
+<jsp:directive.page contentType="text/html"/>
+<jsp:directive.page session="false"/>
+<jsp:directive.page isELIgnored="false"/>
+<jsp:text><![CDATA[<!DOCTYPE html>]]></jsp:text>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="/style.jspx"/>
+</head>
+<body>
+
+<h2>k-means++</h2>
+
+<table class="layout" style="width:100%"><tr><td style="width:60%">
+
+<table class="layout">
+
+<form action="#" style="padding:10px">
+    <tr><td><code>/assign</code></td>
+        <td colspan="2">
+            <textarea rows="5" id="assign-datum">foo,1,bar,3</textarea>
+        </td>
+        <td><a href="#" class="arrow" onclick="return doQuery('assign',true,new Array('datum'))">&amp;#x27AC;</a></td>
+    </tr>
+</form>
+
+<tr><td colspan="4"><hr/></td></tr>
+
+<form action="#" style="padding:10px">
+    <tr><td><code>/distanceToNearest</code></td>
+        <td colspan="2">
+            <textarea rows="5" id="distanceToNearest-datum">foo,1,bar,3</textarea>
+        </td>
+        <td><a href="#" class="arrow" onclick="return doQuery('distanceToNearest',true,new Array('datum'))">&amp;#x27AC;</a></td>
+    </tr>
+</form>
+
+    <jsp:scriptlet>
+        boolean readOnly = (Boolean) application.getAttribute(AbstractOryxServingInitListener.READ_ONLY_KEY);
+        if (readOnly) {
+    </jsp:scriptlet>
+
+<tr><td colspan="4" style="text-align:center"><em>(Read-only Mode)</em></td></tr>
+
+    <jsp:scriptlet>
+    } else {
+    </jsp:scriptlet>
+
+<tr><td colspan="4"><hr/></td></tr>
+
+<form action="#" style="padding:10px">
+    <tr><td><code>/add</code></td>
+        <td colspan="2">
+            <textarea rows="5" id="add-data">foo,1,bar,3</textarea>
+        </td>
+        <td><a href="#" class="arrow" onclick="return doQuery('add',false,[],'data')">&amp;#x27AC;</a></td>
+    </tr>
+</form>
+
+<tr><td colspan="4"><hr/></td></tr>
+
+<form action="#" style="padding:10px">
+    <tr><td><code>/refresh</code></td>
+        <td colspan="2"></td>
+        <td><a href="#" class="arrow" onclick="return doQuery('refresh',false)">&amp;#x27AC;</a></td>
+    </tr>
+</form>
+
+    <jsp:scriptlet>
+        }
+    </jsp:scriptlet>
+
+</table>
+
+</td><td style="width:40%">
+
+<div style="background-color:#404040;padding:10px;min-height:500px;white-space:normal">
+<pre><code id="request-result">[]</code></pre>
+</div>
+
+</td></tr></table>
+
+</body>
+</html>
+</jsp:root>

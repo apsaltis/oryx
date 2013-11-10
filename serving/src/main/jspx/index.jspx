@@ -1,0 +1,171 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1">
+<!--
+  Copyright (c) 2013, Cloudera, Inc. All Rights Reserved.
+
+  Cloudera, Inc. licenses this file to you under the Apache License,
+  Version 2.0 (the "License"). You may not use this file except in
+  compliance with the License. You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  This software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+  CONDITIONS OF ANY KIND, either express or implied. See the License for
+  the specific language governing permissions and limitations under the
+  License.
+  -->
+<jsp:directive.page import="java.util.Map"/>
+<jsp:directive.page import="com.cloudera.oryx.common.stats.JVMEnvironment"/>
+<jsp:directive.page import="com.cloudera.oryx.serving.stats.ServletStats"/>
+<jsp:directive.page import="com.cloudera.oryx.common.stats.RunningStatistics"/>
+<jsp:directive.page import="com.cloudera.oryx.common.stats.RunningStatisticsPerTime"/>
+<jsp:directive.page import="com.cloudera.oryx.serving.web.AbstractOryxServlet"/>
+<jsp:directive.page contentType="text/html"/>
+<jsp:directive.page session="false"/>
+<jsp:directive.page isELIgnored="false"/>
+<jsp:text><![CDATA[<!DOCTYPE html>]]></jsp:text>
+<html>
+<head>
+<title>Oryx Serving Layer</title>
+<link rel="stylesheet" type="text/css" href="/style.jspx"/>
+<script type="text/javascript"><![CDATA[
+function doQuery(endpoint, isGet, paramSuffixes, postBodyElement) {
+
+    if (typeof(paramSuffixes) == "undefined") {
+        paramSuffixes = [];
+    }
+    if (typeof(postBodyElement) == "undefined") {
+        postBodyElement = null;
+    }
+
+    var httpmethod = isGet ? "GET" : "POST";
+    var pathElements = [];
+    pathElements.push(endpoint);
+
+    var paramPrefix = endpoint.replace("/", "");
+    for (var i = 0; i < paramSuffixes.length; i++) {
+        var elementValue = document.getElementById(paramPrefix + "-" + paramSuffixes[i]).value;
+        pathElements.push(elementValue);
+    }
+    var path = pathElements.join("/");
+    var resultElement = document.getElementById("request-result");
+
+    resultElement.innerHTML = "[Querying...]";
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4) {
+            var httpStatus = xmlHttp.status;
+            if (httpStatus == 200) {
+                var responseText = xmlHttp.responseText;
+                if (responseText.length == 0) {
+                    responseText = "[empty]";
+                }
+                resultElement.innerHTML = responseText;
+            } else {
+                resultElement.innerHTML = "[HTTP Error " + httpStatus + " " + xmlHttp.statusText + "]";
+            }
+        }
+    };
+    xmlHttp.open(httpmethod, path);
+    xmlHttp.setRequestHeader("Accept", "text/plain");
+    if (postBodyElement == null) {
+        xmlHttp.send(null);
+    } else {
+        xmlHttp.send(document.getElementById(postBodyElement).value);
+    }
+    return false;
+}
+
+function handleReturn(event, endpoint, isGet, paramSuffixes, postBodyElement) {
+    if (event.keyCode == 13) {
+        doQuery(endpoint, isGet, paramSuffixes, postBodyElement);
+        return false;
+    }
+    return true;
+}
+
+function expandOrCollapse(divID, arrowSpanID) {
+  var theDiv = document.getElementById(divID);
+  var theArrowSpan = document.getElementById(arrowSpanID);
+  if (theDiv.style.display == 'none') {
+    theDiv.style.display = 'block';
+    theArrowSpan.innerHTML = '&#x25BC;';
+  } else {
+    theDiv.style.display = 'none';
+    theArrowSpan.innerHTML = '&#x25B6;';
+  }
+}
+]]></script>
+
+</head>
+
+<body>
+<div style="width:800px;margin-left:auto;margin-right:auto;padding:10px">
+
+<h1>Oryx Serving Layer</h1>
+
+<jsp:scriptlet>
+pageContext.setAttribute("jvmEnv", new JVMEnvironment());
+</jsp:scriptlet>
+
+<table>
+  <tr><td>Host</td><td style="text-align:left"><code>${jvmEnv.hostName}</code></td></tr>
+  <tr><td>Heap Used</td><td style="text-align:left">${jvmEnv.usedMemoryMB}MB (${jvmEnv.percentUsedMemory}%)</td></tr>
+  <tr><td>Logs</td><td style="text-align:left"><a href="log.txt" target="_blank">View</a></td></tr>
+</table>
+
+<hr/>
+
+<h2><span onclick="expandOrCollapse('endpoint-stats','endpoint-stats-arrow')">Endpoint Stats
+  <span id="endpoint-stats-arrow">&#x25B6;</span></span></h2>
+
+<div id="endpoint-stats" style="display:none">
+<table style="width:100%">
+  <tr>
+    <th>Service</th>
+    <th>Requests<br/>(last hour)</th>
+    <th>Average (&amp;mu;s)<br/>(last hour)</th>
+    <th>Max (&amp;mu;s)<br/>(last hour)</th>
+    <th>Client<br/>Errors</th>
+    <th>Server<br/>Errors</th>
+  </tr>
+  <jsp:scriptlet>
+    @SuppressWarnings("unchecked")
+    Map&lt;String,ServletStats&gt; timings =
+        (Map&lt;String,ServletStats&gt;) application.getAttribute(AbstractOryxServlet.TIMINGS_KEY);
+    for (Map.Entry&lt;String,ServletStats&gt; entry : timings.entrySet()) {
+      pageContext.setAttribute("entry", entry);
+  </jsp:scriptlet>
+    <tr>
+      <td style="font-family:Courier,monospace;text-align:left">${entry.key}</td>
+      <jsp:scriptlet>
+        RunningStatistics allTimeNanosec = entry.getValue().getAllTimeNanosec();
+        pageContext.setAttribute("averageMicroSec", (long) (allTimeNanosec.getMean() / 1000.0));
+        pageContext.setAttribute("maxMicroSec", (long) (allTimeNanosec.getMax() / 1000.0));
+        RunningStatisticsPerTime lastHourNanosec = entry.getValue().getLastHourNanosec();
+        pageContext.setAttribute("averageLastHourMicroSec", (long) (lastHourNanosec.getMean() / 1000.0));
+        pageContext.setAttribute("maxLastHourMicroSec", (long) (lastHourNanosec.getMax() / 1000.0));
+        pageContext.setAttribute("clientErrors", entry.getValue().getNumClientErrors());
+        pageContext.setAttribute("serverErrors", entry.getValue().getNumServerErrors());
+      </jsp:scriptlet>
+      <td>${entry.value.allTimeNanosec.count}<br/>${entry.value.lastHourNanosec.count}</td>
+      <td>${averageMicroSec}<br/>${averageLastHourMicroSec}</td>
+      <td>${maxMicroSec}<br/>${maxLastHourMicroSec}</td>
+      <td>${clientErrors}</td>
+      <td>${serverErrors}</td>
+    </tr>
+  <jsp:scriptlet>
+    }
+  </jsp:scriptlet>
+</table>
+</div>
+
+<hr/>
+
+<jsp:include page="/test.jspx"/>
+
+<p>&amp;copy; Cloudera, Inc., except for included third-party open source software.</p>
+
+</div>
+</body>
+</html>
+</jsp:root>

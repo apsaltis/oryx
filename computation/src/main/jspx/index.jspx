@@ -1,0 +1,162 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1">
+<!--
+  Copyright (c) 2013, Cloudera, Inc. All Rights Reserved.
+
+  Cloudera, Inc. licenses this file to you under the Apache License,
+  Version 2.0 (the "License"). You may not use this file except in
+  compliance with the License. You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  This software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+  CONDITIONS OF ANY KIND, either express or implied. See the License for
+  the specific language governing permissions and limitations under the
+  License.
+  -->
+<jsp:directive.page import="com.cloudera.oryx.computation.PeriodicRunner"/>
+<jsp:directive.page import="com.cloudera.oryx.computation.common.GenerationRunnerState"/>
+<jsp:directive.page import="com.cloudera.oryx.computation.common.StepState"/>
+<jsp:directive.page import="com.cloudera.oryx.computation.common.StepStatus"/>
+<jsp:directive.page import="com.cloudera.oryx.computation.PeriodicRunnerState"/>
+<jsp:directive.page import="com.cloudera.oryx.computation.web.ComputationInitListener"/>
+<jsp:directive.page import="java.text.DateFormat"/>
+<jsp:directive.page import="java.text.NumberFormat"/>
+<jsp:directive.page import="java.util.Date"/>
+<jsp:directive.page contentType="text/html"/>
+<jsp:directive.page session="false"/>
+<jsp:directive.page isELIgnored="false"/>
+<jsp:text><![CDATA[<!DOCTYPE html>]]></jsp:text>
+<html>
+<head>
+<title>Oryx Computation Layer</title>
+<link rel="stylesheet" type="text/css" href="/style.jspx"/>
+<script type="text/javascript"><![CDATA[
+function confirmAndPost(formName) {
+  if (confirm("Are you sure?")) {
+    document.forms[formName].submit();
+    return true;
+  } else {
+    return false;
+  }
+}
+]]></script>
+</head>
+
+<jsp:declaration>
+private static String formatShort(Date date) {
+  return date == null ? "" : DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
+}
+private static String formatPercent(float pct) {
+  return Float.isNaN(pct) ? "0%" : NumberFormat.getPercentInstance().format(pct);
+}
+private static String getHexColor(StepStatus status) {
+  switch (status) {
+    case COMPLETED:
+      return "green";
+    case FAILED:
+      return "red";
+    case CANCELLED:
+      return "yellow";
+    default:
+      return "white";
+  }
+}
+</jsp:declaration>
+
+<body>
+<div style="width:800px;margin-left:auto;margin-right:auto;padding:10px">
+
+<h1>Oryx Computation Layer</h1>
+
+<h2>Generations</h2>
+
+<table style="width:100%">
+  <tr>
+    <th>Name</th>
+    <th>Status</th>
+    <th>Start</th>
+    <th style="width:50px">Map %</th>
+    <th style="width:50px">Reduce %</th>
+    <th>End</th>
+  </tr>
+  <jsp:scriptlet>
+  PeriodicRunner periodicRunner = (PeriodicRunner) application.getAttribute(ComputationInitListener.PERIODIC_RUNNER_KEY);
+  pageContext.setAttribute("periodicRunner", periodicRunner);
+    PeriodicRunnerState periodicRunnerState = periodicRunner.getState();
+    if (!periodicRunnerState.isRunning()) {
+      Date nextScheduledRun = periodicRunnerState.getNextScheduledRun();
+      pageContext.setAttribute("nextScheduledRun",
+                               nextScheduledRun == null ? "" : formatShort(nextScheduledRun));
+      pageContext.setAttribute("currentGenerationMB", periodicRunnerState.getCurrentGenerationMB());
+  </jsp:scriptlet>
+  <tr>
+    <td colspan="2" style="background-color:black;text-align:left">
+      <span style="font-style:italic">Next Generation (${currentGenerationMB} MB written)</span>
+      &amp;middot;
+      <form name="periodicRunnerForceRun" action="/periodicRunner/forceRun" method="POST" style="display:inline">
+        <a href="javascript:confirmAndPost('periodicRunnerForceRun')">Force Run</a>
+      </form>
+    </td>
+    <td style="background-color:black;font-style:italic">${nextScheduledRun}</td>
+    <td colspan="3" style="background-color:black">&amp;nbsp;</td>
+  </tr>
+  <jsp:scriptlet>
+    }
+  </jsp:scriptlet>
+  <jsp:scriptlet>
+    for (GenerationRunnerState generationState : periodicRunner.getState().getGenerationStates()) {
+      pageContext.setAttribute("generationState", generationState);
+      pageContext.setAttribute("statusHexColor", getHexColor(generationState.getStatus()));
+      pageContext.setAttribute("formattedStartDateTime", formatShort(generationState.getStartTime()));
+      pageContext.setAttribute("formattedEndDateTime", formatShort(generationState.getEndTime()));
+  </jsp:scriptlet>
+  <tr>
+    <td style="background-color:black;text-align:left">
+      <strong>Generation ${generationState.generationID}</strong> &amp;middot; <a href="/log.txt" target="_blank">Logs</a>
+      <jsp:scriptlet>
+        if (generationState.isRunning()) {
+      </jsp:scriptlet>
+      &amp;middot;
+      <form name="periodicRunnerInterrupt" action="/periodicRunner/interrupt" method="POST" style="display:inline">
+        <a href="javascript:confirmAndPost('periodicRunnerInterrupt')">Interrupt</a>
+      </form>
+      <jsp:scriptlet>
+        }
+      </jsp:scriptlet>
+    </td>
+    <td style="background-color:black;text-align:center;color:${statusHexColor}">${generationState.status}</td>
+    <td style="background-color:black">${formattedStartDateTime}</td>
+    <td colspan="2" style="background-color:black">&amp;nbsp;</td>
+    <td style="background-color:black">${formattedEndDateTime}</td>
+  </tr>
+  <jsp:scriptlet>
+    for (StepState stepState : generationState.getStepStates()) {
+      pageContext.setAttribute("statusHexColor", getHexColor(stepState.getStatus()));
+      pageContext.setAttribute("stepState", stepState);
+      pageContext.setAttribute("formattedStartDateTime", formatShort(stepState.getStartTime()));
+      pageContext.setAttribute("formattedEndDateTime", formatShort(stepState.getEndTime()));
+      pageContext.setAttribute("mapProgress", formatPercent(stepState.getMapProgress()));
+      pageContext.setAttribute("reduceProgress", formatPercent(stepState.getReduceProgress()));
+      String stepStateName = stepState.getName();
+      pageContext.setAttribute("stepStateName", stepStateName);
+  </jsp:scriptlet>
+  <tr>
+    <td>${stepState.name}</td>
+    <td style="text-align:center;color:${statusHexColor}">${stepState.status}</td>
+    <td>${formattedStartDateTime}</td>
+    <td class="meter"><span style="width:${mapProgress}">&amp;nbsp;</span></td>
+    <td class="meter"><span style="width:${reduceProgress}">&amp;nbsp;</span></td>
+    <td>${formattedEndDateTime}</td>
+  </tr>
+  <jsp:scriptlet>
+      }
+    }
+  </jsp:scriptlet>
+</table>
+
+<p>&amp;copy; Cloudera, Inc., except for included third-party open source software.</p>
+
+</div>
+</body>
+</html>
+</jsp:root>
