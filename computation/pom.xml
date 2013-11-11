@@ -24,7 +24,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>oryx-computation</artifactId>
   <packaging>jar</packaging>
-  <name>Oryx Computation</name>
+  <name>Oryx Computation Layer</name>
   <version>0.3.0-SNAPSHOT</version>
 
   <properties>
