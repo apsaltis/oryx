@@ -36,15 +36,14 @@
       <groupId>org.apache.crunch</groupId>
       <artifactId>crunch-core</artifactId>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>org.apache.hcatalog</groupId>
-      <artifactId>hcatalog-core</artifactId>
-    </dependency>
-    -->
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.cloudera.oryx</groupId>
