@@ -33,7 +33,6 @@ import org.dmg.pmml.OpType;
 import org.dmg.pmml.TypeDefinitionField;
 import org.dmg.pmml.Value;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,7 @@ public final class PMMLUtils {
     Map<Integer, BiMap<String, Integer>> m = Maps.transformValues(columnToCategoryLevels,
         new Function<List<String>, BiMap<String, Integer>>() {
           @Override
-          public BiMap<String, Integer> apply(@Nullable List<String> input) {
+          public BiMap<String, Integer> apply(List<String> input) {
             BiMap<String, Integer> r = HashBiMap.create(input.size());
             for (int i = 0; i < input.size(); i++) {
               r.put(input.get(i), i);

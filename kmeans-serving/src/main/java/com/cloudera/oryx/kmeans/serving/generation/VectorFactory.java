@@ -166,14 +166,14 @@ public final class VectorFactory {
 
   private static final ConvertFunction ONE = new ConvertFunction() {
     @Override
-    public Double apply(@Nullable String input) {
+    public Double apply(String input) {
       return 1.0;
     }
   };
 
   private static final ConvertFunction VALUE = new ConvertFunction() {
     @Override
-    public Double apply(@Nullable String input) {
+    public Double apply(String input) {
       try {
         return Double.valueOf(input);
       } catch (NumberFormatException e) {
@@ -183,7 +183,7 @@ public final class VectorFactory {
   };
   private static final ConvertFunction LOG_VALUE = new ConvertFunction() {
     @Override
-    public Double apply(@Nullable String input) {
+    public Double apply(String input) {
       try {
         return Math.log(Double.valueOf(input));
       } catch (NumberFormatException e) {
@@ -206,7 +206,7 @@ public final class VectorFactory {
     }
 
     @Override
-    public Double apply(@Nullable String input) {
+    public Double apply(String input) {
       try {
         double x = Double.valueOf(input);
         return b1 + ((x - a1) / (a2 - a1)) * (b2 - b1);

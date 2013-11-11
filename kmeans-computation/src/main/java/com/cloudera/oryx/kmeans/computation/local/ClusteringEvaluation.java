@@ -31,7 +31,6 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.typesafe.config.Config;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -67,7 +66,7 @@ public final class ClusteringEvaluation implements Callable<List<KMeansEvaluatio
         List<ClusterValidityStatistics> best = evalStrategy.evaluate(Lists.transform(evalData,
             new Function<KMeansEvaluationData, ClusterValidityStatistics>() {
               @Override
-              public ClusterValidityStatistics apply(@Nullable KMeansEvaluationData input) {
+              public ClusterValidityStatistics apply(KMeansEvaluationData input) {
                 return input.getClusterValidityStatistics();
               }
             }));
