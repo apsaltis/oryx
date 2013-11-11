@@ -20,6 +20,7 @@
   <artifactId>oryx</artifactId>
   <packaging>pom</packaging>
   <name>Oryx</name>
+  <description>The Oryx open source project provides simple, real-time large-scale machine learning infrastructure.</description>
   <version>0.3.0-SNAPSHOT</version>
 
   <url>https://github.com/cloudera/oryx</url>
@@ -31,10 +32,23 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  <developers>
+    <developer>
+      <id>cloudera</id>
+      <organization>Cloudera</organization>
+      <organizationUrl>http://cloudera.com/</organizationUrl>
+    </developer>
+  </developers>
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/cloudera/oryx/issues</url>
   </issueManagement>
+  <mailingLists>
+    <mailingList>
+      <name>Cloudera Community: Data Science and Machine Learning</name>
+      <archive>https://community.cloudera.com/t5/Data-Science-and-Machine/bd-p/Mahout</archive>
+    </mailingList>
+  </mailingLists>
   <scm>
     <connection>scm:git:http://github.com/cloudera/oryx.git</connection>
     <url>scm:git:http://github.com/cloudera/oryx.git</url>
