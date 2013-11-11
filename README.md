@@ -210,7 +210,7 @@ User and item IDs must be escaped using CSV conventions if necessary: double-quo
 and use two double-quotes to escape a double-quote within a quoted value.
 
 For a demo, try downloading a sample of the
-[Audioscrobbler data set](http://dom2bevkhhre1.cloudfront.net/audioscrobbler-data.subset.csv.gz)
+[Audioscrobbler data set](http://s3.amazonaws.com/srowen-oryx/audioscrobbler-sample.csv.gz)
 
 Example configuration, which will run computation locally:
 
@@ -227,8 +227,10 @@ Copy the data in manually, and start the servers, as above.
 The Computation Layer should start computing immediately. The Serving Layer will load its output
 shortly after it finishes.
 
-Use the endpoint interface in the console to test by calling `/recommend` with a user ID from your data set to
-see some recommendations.
+Use the endpoint interface in the console, input your own preferences. Next to `/pref`,
+type your name (e.g. `sean`) and type the name of a band in the data set, like `Bad Religion`.
+Then `/recommend` to yourself. If you input this band, you should see
+recommendations like this punk band, like `NOFX` or `Green Day`.
 
 ### Classification / Regression example
 
