@@ -37,15 +37,15 @@ Serving Layer automatically loads new models from HDFS as they become available.
 
 ### Distributed
 
-The Computation Layer is primarily intended to use Hadoop's MapReduce environment for computation. In this
-"distributed" context, the Computation Layer process is minding a series of MapReduce jobs that execute on
-the cluster. The server process configures, launches and monitors the jobs. Input, intermediate outputs,
-and model output are all on HDFS.
+The Computation Layer is primarily intended to use Hadoop's computation environment for computation, which
+for the moment means MapReduce. In this "distributed" context, the Computation Layer process is minding a
+series of jobs that execute on the cluster. The server process configures, launches and monitors the jobs.
+Input, intermediate outputs, and model output are all on HDFS.
 
 ### Local
 
 The Computation Layer can also be configured to run the computations locally rather than on Hadoop, and to read
-and write data to the local file system. It will simply use a multi-threaded in-memory, non-MapReduce implementation.
+and write data to the local file system. It will simply use a multi-threaded in-memory, non-Hadoop implementation.
 This is useful for small or non-critical problems, or for simple testing.
 
 ### Directory Layout
@@ -105,8 +105,8 @@ learning, which seeks to find structure in its input in the form of natural grou
 Clone the repository from github.com. Run `mvn -DskipTests clean install` from the top level.
 This will build the following binaries:
 
-* Serving Layer: `serving/target/oryx-serving-x.y.z-SNAPSHOT.jar`
-* Computation Layer: `computation/target/oryx-computation-x.y.z-SNAPSHOT.jar`
+* Serving Layer: `serving/target/oryx-serving-x.y.z.jar`
+* Computation Layer: `computation/target/oryx-computation-x.y.z.jar`
 
 # Installation
 
@@ -169,13 +169,14 @@ serving-layer.api.port=8091
 computation-layer.api.port=8092
 ```
 
-(Ports 8091/8092 is desirable instead of 8080 since YARN daemons use 8080.)
+(Ports 8091/8092 are desirable instead of defaults of 80 and 8080, since these require root acces,
+and YARN daemons use 8080, respectively.)
 
 ## Running
 
 ```
-java -Dconfig.file=oryx.conf -jar computation/target/oryx-computation-x.y.z-SNAPSHOT.jar
-sudo java -Dconfig.file=oryx.conf -jar serving/target/oryx-serving-x.y.z-SNAPSHOT.jar
+java -Dconfig.file=oryx.conf -jar computation/target/oryx-computation-x.y.z.jar
+sudo java -Dconfig.file=oryx.conf -jar serving/target/oryx-serving-x.y.z.jar
 ```
 
 Note that the Serving Layer does not need to be run as `root` with `sudo` if it is configured to not use
